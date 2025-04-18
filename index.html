@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rotar cubo con giroscopio</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background-color: #f0f0f0;
+    }
+
+    button {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 20px;
+      font-size: 16px;
+      z-index: 10;
+    }
+
+    .cube {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      transform-style: preserve-3d;
+      margin-left: 50vw;
+      margin-top: 50vh;
+      transform: translate(-50%, -50%) rotateX(45deg) rotateY(45deg);
+      transition: transform 0.1s linear;
+    }
+
+    .face {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background-color: #ccc;
+      border: 1px solid #999;
+    }
+
+    .front  { transform: translateZ(50px); }
+    .back   { transform: rotateY(180deg) translateZ(50px); }
+    .top    { transform: rotateX(-90deg) translateZ(50px); }
+    .bottom { transform: rotateX(90deg) translateZ(50px); }
+    .left   { transform: rotateY(-90deg) translateZ(50px); }
+    .right  { transform: rotateY(90deg) translateZ(50px); }
+  </style>
+</head>
+<body>
+
+  <button id="permissionButton">Dar permiso</button>
+
+  <div class="cube">
+    <div class="face front"></div>
+    <div class="face back"></div>
+    <div class="face top"></div>
+    <div class="face bottom"></div>
+    <div class="face left"></div>
+    <div class="face right"></div>
+  </div>
+
+  <script>
+    function handleOrientation(event) {
+      const alpha = event.alpha || 0;
+      const beta = event.beta || 0;
+      const gamma = event.gamma || 0;
+
+      const cube = document.querySelector('.cube');
+      cube.style.transform = `translate(-50%, -50%) rotateX(${beta}deg) rotateY(${gamma}deg) rotateZ(${alpha}deg)`;
+    }
+
+    async function requestDeviceOrientation() {
+      if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+        try {
+          const response = await DeviceOrientationEvent.requestPermission();
+          if (response === 'granted') {
+            alert('Permiso otorgado');
+            window.addEventListener('deviceorientation', handleOrientation);
+          } else {
+            alert('Permiso denegado');
+          }
+        } catch (e) {
+          alert('Error al solicitar permiso: ' + e);
+        }
+      } else if ('DeviceOrientationEvent' in window) {
+        // Para Android o navegadores sin requerimiento de permiso
+        window.addEventListener('deviceorientation', handleOrientation);
+      } else {
+        alert('Tu dispositivo no soporta DeviceOrientation');
+      }
+    }
+
+    document.getElementById('permissionButton').addEventListener('click', requestDeviceOrientation);
+    document.getElementById('permissionButton').addEventListener('touchend', requestDeviceOrientation, { passive: true });
+  </script>
+</body>
+</html>
