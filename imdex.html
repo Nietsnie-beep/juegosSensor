@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Orientación del Dispositivo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding-top: 50px;
+    }
+    .value {
+      font-size: 24px;
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Orientación del móvil 📱</h1>
+<div class="value">Alpha (Z): <span id="alpha">0</span>°</div>
+<div class="value">Beta (X): <span id="beta">0</span>°</div>
+<div class="value">Gamma (Y): <span id="gamma">0</span>°</div>
+
+<script>
+  window.addEventListener("deviceorientation", function(event) {
+    document.getElementById("alpha").textContent = event.alpha.toFixed(2);
+    document.getElementById("beta").textContent = event.beta.toFixed(2);
+    document.getElementById("gamma").textContent = event.gamma.toFixed(2);
+  }, true);
+</script>
+
+</body>
+</html>
